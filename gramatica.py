@@ -10,12 +10,14 @@ def p_prog1(t): "prog : prog Instrucao "                        ; t[0] = f'{t[1]
 def p_prog2(t): "prog : Instrucao "                             ; t[0] = t[1]
 
 def p_Instrucao1(t): "Instrucao : Exp"                          ; t[0] = f'{t[1]}'
-def p_Instrucao2(t): "Instrucao : '.'"                          ; t[0] = f'writei'
-def p_Instrucao3(t): "Instrucao : '.' '\"' STRING '\"'"         ; t[0] = f'pushs {t[3]}\nwrites'
-def p_Instrucao4(t): "Instrucao : CHAR ID"                      ; t[0] = f'pushs "{t[2]}"\nchrcode'
-def p_Instrucao5(t): "Instrucao : EMIT"                         ; t[0] = f'writechr'
+def p_Instrucao2(t): "Instrucao : Print"                        ; t[0] = f'{t[1]}'
 def p_Instrucao6(t): "Instrucao : Cond"                         ; t[0] = t[1]
 def p_Instrucao7(t): "Instrucao : ':' Funcao ';'"               ; t[0] = t[2]
+
+def p_Print1(t): "Print : '.'"                                  ; t[0] = f'writei'
+def p_Print2(t): "Print : '.' '\"' STRING '\"'"                 ; t[0] = f'pushs {t[3]}\nwrites'
+def p_Print3(t): "Print : CHAR ID"                              ; t[0] = f'pushs "{t[2]}"\nchrcode'
+def p_Print4(t): "Print : EMIT"                                 ; t[0] = f'writechr'
 
 def p_Exp1(t): "Exp : '(' Exp ')'"                              ; t[0] = t[2]
 def p_Exp2(t): "Exp : Expi"                                     ; t[0] = t[1]
