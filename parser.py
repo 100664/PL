@@ -4,20 +4,32 @@ from ply.yacc import yacc
 import math
 import sys
 
-tokens = ('NUM', 'ID', 'TRIGNO', 'LER', 'STRING')
+tokens = ('INT', 'FLOAT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE')
 
-literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.']
+literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>']
 
 fs = {'sin' : math.sin, 'cos' : math.cos, 'inc' : lambda x: x + 1, 'dec' : lambda x: x - 1}
 
+def t_INT(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t
 
-def t_NUM (t):
+def t_FLOAT (t):
     r'\d+(\.\d+)?'
     t.value = float(t.value)
     return t
 
-def t_LER (t):
-    r'ler\b'
+def t_IF (t):
+    r'if\b'
+    return t
+
+def t_THEN (t):
+    r'then\b'
+    return t
+
+def t_ELSE (t):
+    r'else\b'
     return t
 
 def t_ID (t):
@@ -48,70 +60,74 @@ def lexer_debug (exemplo):
     while token := lexer.token():
         print(token)
 
-#lexer_debug(exemplo)
 
 ### GRAMÁTICA ### 
         
 vars = {}
 
-"""
+def p_z(t): "z : prog"                                          ; t[0] = f'{despejaVars(vars)}\nSTART\n{t[1]}\nSTOP'
 
-def p_z (t)          : "z : programa"                           ;t[0] = f'{despejaVars(vars)}\nSTART\n{t[1]}\nSTOP'
+def p_prog1(t): "prog : prog Instrucao "                        ; t[0] = f'{t[1]}\n{t[2]}'
+def p_prog2(t): "prog : Instrucao "                             ; t[0] = t[1]
 
-def p_programa1 (t)  : "programa : programa instrucao"          ;t[0] = f'{t[1]}\n{t[2]}'
-def p_programa2 (t)  : "programa : instrucao"                   ;t[0] = t[1]
+def p_Instrucao1(t): "Instrucao : Exp"                          ; t[0] = f'{t[1]}'
+def p_Instrucao2(t): "Instrucao : '.'"                          ; t[0] = f'pop'
+def p_Instrucao3(t): "Instrucao : '.' '\"' STRING '\"'"         ; t[0] = f'pushs {t[3]}\nwrites'
+def p_Instrucao4(t): "Instrucao : Cond"                         ; t[0] = t[1]
 
-def p_instrucao1 (t) : "instrucao : expression"                 ;t[0] = f'{t[1]}\n writef\n'
-def p_instrucao2 (t) : "instrucao : ID '=' expression"          ;t[0] = f'{t[3]}\n storeg {getoffSet(t[1])}'
+def p_cond1(t): "Cond : IF Exp THEN '{' prog '}' Elseop"        ; t[0] = f'{t[2]}\n ftoi \n jz else \n {t[5]}\n\n{t[7]}\nend:'
+def p_cond2(t): "Cond : IF Exp THEN prog Elseop"                ; t[0] = f'{t[2]}\n ftoi \n jz end \n {t[4]}\n\n{t[5]}\nend:'
 
-def p_expression1 (t): "expression : parcela"                   ; t[0] = t[1]
-def p_expression2(t) : "expression : expression parcela '+'"    ;t[0] = f'{t[1]} \n {t[2]} \n fadd'
-def p_expression3(t) : "expression : expression parcela '-'"    ;t[0] = f'{t[1]} \n {t[2]} \n fsub'
+def p_elseop1(t): "Elseop : ELSE '{' prog '}'"                  ; t[0] = f'else: \n{t[3]}'
+def p_elseop2(t): "Elseop : ELSE prog"                          ; t[0] = f'else: \n{t[2]}'
+def p_elseop3(t): "Elseop : "                                   ; t[0] = f'else: \n'
 
-def p_parcela1 (t)   : "parcela : fator"                        ;t[0] = t[1]
-def p_parcela2 (t)   : "parcela : parcela fator '*'"            ;t[0] = f'pushf 0 \n {t[1]} \n {t[2]} \n fmul'
-def p_parcela3 (t)   : "parcela : parcela fator '/' "           ;t[0] = f'pushf 0 \n {t[1]} \n {t[2]} \n fdiv'
+def p_Exp1(t): "Exp : '(' Exp ')'"                              ; t[0] = t[2]
+def p_Exp2(t): "Exp : Expi"                                     ; t[0] = t[1]
+def p_Exp3(t): "Exp : Expf"                                     ; t[0] = t[1]
+def p_Exp4(t): "Exp : Exp '='"                                  ; t[0] = f'{t[1]}\nequal' #igualdade entre NUMEROS
 
-def p_fator1 (t)     : "fator : termo"                          ;t[0] = t[1]
-def p_fator2 (t)     : "fator : termo '%' fator"                ;t[0] = f'{t[1]} \n {t[3]} \n fmod'
+def p_Expi1(t): "Expi : Lints"                                  ; t[0] = t[1]
+def p_Expi2(t): "Expi : Expi '+'"                               ; t[0] = f'{t[1]}\nadd'
+def p_Expi3(t): "Expi : Expi '-'"                               ; t[0] = f'{t[1]}\nsub'
+def p_Expi4(t): "Expi : Expi '*'"                               ; t[0] = f'{t[1]}\nmul'
+def p_Expi5(t): "Expi : Expi '/'"                               ; t[0] = f'{t[1]}\ndiv'
+def p_Expi6(t): "Expi : Expi '%'"                               ; t[0] = f'{t[1]}\nmod'
+def p_Expi7(t): "Expi : Expi '<'"                               ; t[0] = f'{t[1]}\ninf'
+def p_Expi8(t): "Expi : Expi '<' '='"                               ; t[0] = f'{t[1]}\ninfeq'
+def p_Expi9(t): "Expi : Expi '>'"                               ; t[0] = f'{t[1]}\nsup'
+def p_Expi10(t): "Expi : Expi '>' '='"                          ; t[0] = f'{t[1]}\nsupeq'
 
-def p_termo1 (t)     : "termo : NUM"                            ;t[0] = f'pushf {t[1]}'
-def p_termo2 (t)     : "termo : '(' expression ')'"             ;t[0] = t[2]
-def p_termo3 (t)     : "termo : '-' termo"                      ;t[0] = f'pushf 0 \n {t[2]} \n fsub'
-def p_termo4 (t)     : "termo : '+' termo"                      ;t[0] = f'pushf 0 \n {t[2]} \n fadd'
-def p_termo5 (t)     : "termo : ID"                             ;t[0] = f'pushg {getoffSet(t[1])}'
-def p_termo6 (t)     : "termo : TRIGNO '(' expression ')'"      ;t[0] = t[1](t[3])
-def p_termo7 (t)     : "termo : LER '(' STRING ')'"             ;t[0] = f'pushs "{t[3]}" \n writes \n read \n atoi'
+def p_Expf1(t): "Expf : Lfloats"                                 ; t[0] = t[1]
+def p_Expf2(t): "Expf : Expf '+'"                                ; t[0] = f'{t[1]}\nfadd'
+def p_Expf3(t): "Expf : Expf '-'"                                ; t[0] = f'{t[1]}\nfsub'
+def p_Expf4(t): "Expf : Expf '*'"                                ; t[0] = f'{t[1]}\nfmul'
+def p_Expf5(t): "Expf : Expf '/'"                                ; t[0] = f'{t[1]}\nfdiv'
+def p_Expf6(t): "Expf : Expf '%'"                                ; t[0] = f'{t[1]}\nfmod'
+def p_Expf7(t): "Expf : Expf '<'"                                ; t[0] = f'{t[1]}\nfinf'
+def p_Expf8(t): "Expf : Expf '<' '='"                           ; t[0] = f'{t[1]}\nfinfeq'
+def p_Expf9(t): "Expf : Expf '>'"                               ; t[0] = f'{t[1]}\nfsup'
+def p_Expf10(t): "Expf : Expf '>' '='"                          ; t[0] = f'{t[1]}\nfsupeq'
 
-"""
+def p_Lnums1(t): "Lints : Termoi"                               ; t[0] = t[1]
+def p_Lnums2(t): "Lints : Lints Termoi"                         ; t[0] = f'{t[1]}\n{t[2]}'
+def p_Lnums3(t): "Lints : '-' Termoi"                           ; t[0] = f'pushi 0\n{t[2]}\nsub'
 
+def p_Termoi1(t): "Termoi : INT"                                ; t[0] = f'pushi {t[1]}'
+def p_Termoi2(t): "Termoi : INT '+'"                            ; t[0] = f'pushi {t[1]}\nadd'
+def p_Termoi3(t): "Termoi : INT '-'"                            ; t[0] = f'pushi {t[1]}\nsub'
+def p_Termoi4(t): "Termoi : INT '*'"                            ; t[0] = f'pushi {t[1]}\nmul'
+def p_Termoi5(t): "Termoi : INT '/'"                            ; t[0] = f'pushi {t[1]}\ndiv'
 
-def p_z(t): "z : prog"                              ; t[0] = f'{despejaVars(vars)}\nSTART\n{t[1]}\nSTOP'
+def p_Lfloats1(t): "Lfloats : Termof"                           ; t[0] = t[1]
+def p_Lfloats2(t): "Lfloats : Lfloats Termof"                   ; t[0] = f'{t[1]}\n{t[2]}'
+def p_Lfloats3(t): "Lfloats : '-' Termof"                       ; t[0] = f'pushf 0\n{t[2]}\nfsub'
 
-def p_prog1(t): "prog : prog Instrucao "            ; t[0] = f'{t[1]}\n{t[2]}'
-def p_prog2(t): "prog : Instrucao "                 ; t[0] = t[1]
-
-def p_Intrucao1(t): "Instrucao : Exp"               ; t[0] = f'{t[1]}'
-def p_Intrucao2(t): "Instrucao : '.'"               ; t[0] = f'pop'
-#def p_Intrucao3(t): "Instrucao : ':' Nfunc ';'"     ; t[0] = f'{t[2]}'
-
-def p_Exp1(t): "Exp : Lnums"                        ; t[0] = t[1]
-def p_Exp2(t): "Exp : Exp '+'"                      ; t[0] = f'{t[1]}\nfadd'
-def p_Exp3(t): "Exp : Exp '-'"                      ; t[0] = f'{t[1]}\nfsub'
-def p_Exp4(t): "Exp : Exp '*'"                      ; t[0] = f'{t[1]}\nfmul'
-def p_Exp5(t): "Exp : Exp '/'"                      ; t[0] = f'{t[1]}\nfdiv'
-def p_Exp6(t): "Exp : Exp '%'"                      ; t[0] = f'{t[1]}\nfmod'
-
-def p_Lnums1(t): "Lnums : Termo"                    ; t[0] = t[1]
-def p_Lnums2(t): "Lnums : Lnums Termo"              ; t[0] = f'{t[1]}\n{t[2]}'
-
-def p_Termo1(t): "Termo : NUM"                      ; t[0] = f'pushf {t[1]}'
-def p_Termo2(t): "Termo : NUM '+'"                  ; t[0] = f'pushf {t[1]}\nfadd'
-def p_Termo3(t): "Termo : NUM '-'"                  ; t[0] = f'pushf {t[1]}\nfsub'
-def p_Termo4(t): "Termo : NUM '*'"                  ; t[0] = f'pushf {t[1]}\nfmul'
-def p_Termo5(t): "Termo : NUM '/'"                  ; t[0] = f'pushf {t[1]}\nfdiv'
-def p_Termo6(t): "Termo : '(' Exp ')'"              ; t[0] = t[2]
-def p_Termo7(t): "Termo : '-' Termo"                ; t[0] = f'pushf 0\n{t[2]}\nfsub'
+def p_Termof1(t): "Termof : FLOAT"                              ; t[0] = f'pushf {t[1]}'
+def p_Termof2(t): "Termof : FLOAT '+'"                          ; t[0] = f'pushf {t[1]}\nfadd'
+def p_Termof3(t): "Termof : FLOAT '-'"                          ; t[0] = f'pushf {t[1]}\nfsub'
+def p_Termof4(t): "Termof : FLOAT '*'"                          ; t[0] = f'pushf {t[1]}\nfmul'
+def p_Termof5(t): "Termof : FLOAT '/'"                          ; t[0] = f'pushf {t[1]}\nfdiv'
 
 def p_error(t): 
     print(f"Erro de sintaxe: {t.value}, {t}")
