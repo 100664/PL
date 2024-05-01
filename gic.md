@@ -20,9 +20,6 @@ fator: termo
 termo: '(' Exp ')'
     | NUM
     
-    
-    
-z : prog '$'
 
 
 """
