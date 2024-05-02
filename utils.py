@@ -1,5 +1,6 @@
 vars = {}
 funcs = {}
+label = 0
 
 def p_error(t): 
     print(f"Erro de sintaxe: {t.value}, {t}")
@@ -18,3 +19,8 @@ def getoffSet (id):
         vars[id] = len(vars)
         return vars[id]
     
+def get_label(s):
+    global label
+    if s == "IF":
+        label += 1
+    return label

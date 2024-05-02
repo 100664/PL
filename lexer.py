@@ -14,15 +14,15 @@ def t_INT(t):
     return t
 
 def t_IF (t):
-    r'if\b'
+    r'IF\b'
     return t
 
 def t_THEN (t):
-    r'then\b'
+    r'THEN\b'
     return t
 
 def t_ELSE (t):
-    r'else\b'
+    r'ELSE\b'
     return t
 
 def t_CHAR (t):
