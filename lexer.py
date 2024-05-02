@@ -2,14 +2,14 @@ import math
 import re
 from ply.lex import lex
 
-tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC')
+tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC', 'DO', 'LOOP')
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>']
 
 fs = {'sin' : math.sin, 'cos' : math.cos, 'inc' : lambda x: x + 1, 'dec' : lambda x: x - 1}
 
 def t_INT(t):
-    r'\d+'
+    r'[+|-]?\d+'
     t.value = int(t.value)
     return t
 
@@ -31,6 +31,14 @@ def t_CHAR (t):
 
 def t_EMIT(t):
     r'EMIT\b'
+    return t
+
+def t_DO(t):
+    r'DO\b'
+    return t
+
+def t_LOOP(t):
+    r'LOOP\b'
     return t
 
 def t_NFUNC(t):

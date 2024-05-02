@@ -1,6 +1,7 @@
 vars = {}
 funcs = {}
-label = 0
+label_cond = 0
+label_loop = 0
 
 def p_error(t): 
     print(f"Erro de sintaxe: {t.value}, {t}")
@@ -19,8 +20,14 @@ def getoffSet (id):
         vars[id] = len(vars)
         return vars[id]
     
-def get_label(s):
+def get_label_cond(s):
     global label
     if s == "IF":
-        label += 1
-    return label
+        label_cond += 1
+    return label_cond
+
+def get_label_loop(s):
+    global label_loop
+    if s == "DO":
+        label_loop += 1
+    return label_loop
