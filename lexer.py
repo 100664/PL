@@ -2,9 +2,9 @@ import math
 import re
 from ply.lex import lex
 
-tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC', 'DO', 'LOOP')
+tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC', 'DO', 'LOOP', 'VARIABLE', 'NVARIAVEIS')
 
-literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>']
+literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?']
 
 fs = {'sin' : math.sin, 'cos' : math.cos, 'inc' : lambda x: x + 1, 'dec' : lambda x: x - 1}
 
@@ -39,6 +39,14 @@ def t_DO(t):
 
 def t_LOOP(t):
     r'LOOP\b'
+    return t
+
+def t_VARIABLE(t):
+    r'VARIABLE\b'
+    return t
+
+def t_NVARIAVEIS(t):
+    r'[A-Z]+\b'
     return t
 
 def t_NFUNC(t):

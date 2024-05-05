@@ -5,7 +5,7 @@ from lexer import *
 from utils import *
 
 
-def p_z(t): "z : prog"                                              ; t[0] = f'{despejaVars(vars)}\nSTART\n{t[1]}\nSTOP'
+def p_z(t): "z : prog"                                              ; t[0] = f'\n{despejaVars(vars)}\nSTART\n{t[1]}\n\nSTOP\n';
 
 def p_prog1(t): "prog : prog Instrucao "                            ; t[0] = f'{t[1]}\n{t[2]}'
 def p_prog2(t): "prog : Instrucao "                                 ; t[0] = t[1]
@@ -15,6 +15,7 @@ def p_Instrucao2(t): "Instrucao : Exp"                              ; t[0] = f'{
 def p_Instrucao3(t): "Instrucao : Print"                            ; t[0] = f'{t[1]}'
 def p_Instrucao4(t): "Instrucao : Cond"                             ; t[0] = t[1]
 def p_Instrucao5(t): "Instrucao : ':' Funcao ';'"                   ; t[0] = t[2]
+def p_Instrucao6(t): "Instrucao : Variaveis"                        ; t[0] = t[1]
 
 def p_Print1(t): "Print : Exp '.'"                                  ; t[0] = f'{t[1]}\nwritei'
 def p_Print2(t): "Print : CHAR ID"                                  ; t[0] = f'pushs "{t[2]}"\nchrcode'
@@ -34,6 +35,7 @@ def p_Lnums3(t): "Lints : '-' Termoi"                               ; t[0] = f'p
 
 def p_Termoi1(t): "Termoi : INT"                                    ; t[0] = f'pushi {t[1]}'
 def p_Termoi2(t): "Termoi : INT Sinal"                              ; t[0] = f'pushi {t[1]}\n{t[2]}'
+def p_Termoi3(t): "Termoi : VARIABLE"                               ; t[0] = vars.get(t[1], 0)
 
 def p_cond1(t): "Cond : IF Exp THEN '{' prog '}' ELSE '{' prog '}'" ; t[0] = f'{t[2]}\njz else{get_label_cond(t[1])}\n{t[5]}\njump endif{get_label_cond(t[3])}\nelse{get_label_cond(t[3])}:\n{t[9]}\nendif{get_label_cond(t[3])}:'
 def p_cond2(t): "Cond : IF Exp THEN '{' prog '}' ELSE Instrucao"    ; t[0] = f'{t[2]}\njz else{get_label_cond(t[1])}\n{t[5]}\njump endif{get_label_cond(t[3])}\nelse{get_label_cond(t[3])}:\n{t[8]}\nendif{get_label_cond(t[3])}:'
@@ -67,6 +69,10 @@ def p_Lsinais2(t): "Lsinais : Lsinais Sinal"                        ; t[0] = f'{
 #ciclos estao mal
 def p_Ciclo1(t) : "Ciclo : INT INT DO '{' prog '}' LOOP"             ; t[0] = f'while{get_label_loop(t[3])}:\npushi {t[1]}\npushi {t[2]}\npushn 0\nsup\njz endwhile{get_label_loop(t[4])}\n{t[5]}\n pushg 0\npushi 1\nadd\nstoreg 0\njump while{get_label_loop(t[4])}\nendwhile{get_label_loop(t[4])}:'
 def p_Ciclo2(t) : "Ciclo : INT INT DO Instrucao LOOP"                ; t[0] = f'while{get_label_loop(t[3])}:\npushi {t[1]}\npushi {t[2]}\npushn 0\nsup\njz endwhile{get_label_loop(t[4])}\n{t[4]}\n pushg 0\npushi 1\nadd\nstoreg 0\njump while{get_label_loop(t[4])}\nendwhile{get_label_loop(t[4])}:'
+
+def p_Variaveis1(t): "Variaveis : VARIABLE NVARIAVEIS"               ; t[0] = f''; vars[t[1]] = t[2]
+def p_Variaveis2(t): "Variaveis : Exp NVARIAVEIS '!'"                ; t[0] = f'{t[1]}\nstoreg {getoffSet(t[2])}'
+def p_Variaveis3(t): "Variaveis : NVARIAVEIS '?'"                    ; t[0] = f'pushg {getoffSet(t[1])}\nwritei'
 
 parser = yacc()
 

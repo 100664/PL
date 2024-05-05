@@ -7,7 +7,7 @@ def p_error(t):
     print(f"Erro de sintaxe: {t.value}, {t}")
 
 def despejaVars (vars):
-    return 'pushg 0\n' * len (vars)
+    return 'pushg 0\n' * (len (vars) - 1)
 
 def define_funcao(nome, exp):
     funcs[nome] = f'{exp}\nstoreg {len(funcs) - 1}'
@@ -17,7 +17,7 @@ def getoffSet (id):
     if (id in vars):
         return vars[id]
     else:
-        vars[id] = len(vars)
+        vars[id] = len(vars) - 1
         return vars[id]
     
 def get_label_cond(s):
