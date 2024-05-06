@@ -19,9 +19,12 @@ def p_Instrucao6(t): "Instrucao : Variaveis"                        ; t[0] = t[1
 
 def p_Print1(t): "Print : Exp '.'"                                  ; t[0] = f'{t[1]}\nwritei'
 def p_Print2(t): "Print : CHAR ID"                                  ; t[0] = f'pushs "{t[2]}"\nchrcode'
-def p_Print3(t): "Print : '.' STRING"                               ; t[0] = f'pushs "{t[2]}"'
-def p_Print4(t): "Print : STRING '.'"                               ; t[0] = f'writes'
-def p_Print5(t): "Print : EMIT"                                     ; t[0] = f'writechr'
+def p_Print3(t): "Print : SPACE"                                    ; t[0] = f' '
+def p_Print4(t): "Print : SPACES INT"                               ; t[0] = f' ' * t[2]
+def p_Print5(t): "Print : '.' STRING"                               ; t[0] = f'pushs "{t[2]}"'
+def p_Print6(t): "Print : STRING '.'"                               ; t[0] = f'writes'
+def p_Print7(t): "Print : EMIT"                                     ; t[0] = f'writechr'
+def p_Print8(t): "Print : CR"                                       ; t[0] = f'\n'
 
 def p_Exp1(t): "Exp : '(' Exp ')'"                                  ; t[0] = t[2]
 def p_Exp2(t): "Exp : Expi"                                         ; t[0] = t[1]
@@ -54,13 +57,15 @@ def p_Sinal7(t): "Sinal : '<' '='"                                  ; t[0] = f'i
 def p_Sinal8(t): "Sinal : '>'"                                      ; t[0] = f'sup'
 def p_Sinal9(t): "Sinal : '>' '='"                                  ; t[0] = f'supeq'
 
-def p_Funcao1(t): "Funcao : NFUNC Definicao"                        ; t[0] = f'{define_funcao(t[1], t[2])}'
+def p_Funcao1(t): "Funcao : NOME Definicao"                        ; t[0] = f'{define_funcao(t[1], t[2])}'
 
 def p_Definicao1(t): "Definicao : Conteudo"                         ; t[0] = f'{t[1]}'
 def p_Definicao2(t): "Definicao : Definicao Conteudo"               ; t[0] = f'{t[1]}\n{t[2]}'
 
 def p_Couteudo1(t): "Conteudo : Exp "                               ; t[0] = f'{t[1]}'
 def p_Conteudo2(t): "Conteudo : Lsinais"                            ; t[0] = f'{t[1]}'
+def p_Conteudo3(t): "Conteudo : Print"                              ; t[0] = f'{t[1]}'
+def p_Conteudo4(t): "Conteudo : Cond"                               ; t[0] = f'{t[1]}'
 
 def p_Lsinais1(t): "Lsinais : Sinal"                                ; t[0] = f'{t[1]}'
 def p_Lsinais2(t): "Lsinais : Lsinais Sinal"                        ; t[0] = f'{t[1]}\n{t[2]}'
@@ -70,9 +75,9 @@ def p_Lsinais2(t): "Lsinais : Lsinais Sinal"                        ; t[0] = f'{
 def p_Ciclo1(t) : "Ciclo : INT INT DO '{' prog '}' LOOP"             ; t[0] = f'while{get_label_loop(t[3])}:\npushi {t[1]}\npushi {t[2]}\npushn 0\nsup\njz endwhile{get_label_loop(t[4])}\n{t[5]}\n pushg 0\npushi 1\nadd\nstoreg 0\njump while{get_label_loop(t[4])}\nendwhile{get_label_loop(t[4])}:'
 def p_Ciclo2(t) : "Ciclo : INT INT DO Instrucao LOOP"                ; t[0] = f'while{get_label_loop(t[3])}:\npushi {t[1]}\npushi {t[2]}\npushn 0\nsup\njz endwhile{get_label_loop(t[4])}\n{t[4]}\n pushg 0\npushi 1\nadd\nstoreg 0\njump while{get_label_loop(t[4])}\nendwhile{get_label_loop(t[4])}:'
 
-def p_Variaveis1(t): "Variaveis : VARIABLE NVARIAVEIS"               ; t[0] = f''; vars[t[1]] = t[2]
-def p_Variaveis2(t): "Variaveis : Exp NVARIAVEIS '!'"                ; t[0] = f'{t[1]}\nstoreg {getoffSet(t[2])}'
-def p_Variaveis3(t): "Variaveis : NVARIAVEIS '?'"                    ; t[0] = f'pushg {getoffSet(t[1])}\nwritei'
+def p_Variaveis1(t): "Variaveis : VARIABLE NOME"               ; t[0] = f''; vars[t[1]] = t[2]
+def p_Variaveis2(t): "Variaveis : Exp NOME '!'"                ; t[0] = f'{t[1]}\nstoreg {getoffSet(t[2])}'
+def p_Variaveis3(t): "Variaveis : NOME '?'"                    ; t[0] = f'pushg {getoffSet(t[1])}\nwritei'
 
 parser = yacc()
 

@@ -12,7 +12,6 @@ def despejaVars (vars):
 
 def define_funcao(nome, exp):
     funcs[nome] = f'{exp}\nstoreg {len(funcs) - 1}'
-    return f'{exp}\nstoreg {len(funcs) - 1}'
 
 def print_funcoes():
     result = f''

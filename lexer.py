@@ -2,7 +2,21 @@ import math
 import re
 from ply.lex import lex
 
-tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC', 'DO', 'LOOP', 'VARIABLE', 'NVARIAVEIS')
+tokens = ('INT', 
+          'ID', 
+          'STRING', 
+          'IF', 
+          'THEN', 
+          'ELSE', 
+          'CHAR', 
+          'EMIT', 
+          'NOME', 
+          'DO', 
+          'LOOP', 
+          'VARIABLE', 
+          'CR', 
+          'SPACE', 
+          'SPACES')
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?']
 
@@ -43,11 +57,19 @@ def t_VARIABLE(t):
     r'VARIABLE\b'
     return t
 
-def t_NVARIAVEIS(t):
-    r'[A-Z]+\b'
+def t_CR(t):
+    r'CR\b'
     return t
 
-def t_NFUNC(t):
+def t_SPACE(t):
+    r'SPACE\b'
+    return t
+
+def t_SPACES(t):
+    r'SPACES\b'
+    return t
+
+def t_NOME(t):
     r'[A-Z]+\b'
     return t
 
