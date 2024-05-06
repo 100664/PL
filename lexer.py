@@ -6,8 +6,6 @@ tokens = ('INT', 'ID', 'STRING', 'IF', 'THEN', 'ELSE', 'CHAR', 'EMIT', 'NFUNC', 
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?']
 
-fs = {'sin' : math.sin, 'cos' : math.cos, 'inc' : lambda x: x + 1, 'dec' : lambda x: x - 1}
-
 def t_INT(t):
     r'[+|-]?\d+'
     t.value = int(t.value)
@@ -54,7 +52,7 @@ def t_NFUNC(t):
     return t
 
 def t_ID (t):
-    r'[A-Za-z]\w*'
+    r'[A-Za-z]'
     return t
 
 def t_STRING (t):
