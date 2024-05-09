@@ -1,5 +1,6 @@
 vars = {}
 funcs = {}
+func_arg = {}
 label_cond = 0
 label_loop = 0
 func_flag = 0
@@ -11,17 +12,16 @@ def despejaVars (vars):
     return 'pushg 0\n' * (len (vars) - 1)
 
 def define_funcao(nome, exp):
-    funcs[nome] = f'{exp}\nstoreg {len(funcs) - 1}'
+    funcs[nome] = f'{exp}'
+    global func_flag
+    func_flag = 1
 
 def print_funcoes():
-    result = f''
-    if (func_flag == 1) :
-        result = f'{funcs}pushfp\n'
-        for key, value in funcs.items():
-            result += f'{define_funcao(key, value)}\n'
-        result += 'return'
-        for key, value in funcs.items():
-            result += f'\n{key}:\n {value}'
+    global func_flag
+    result = ''
+    if func_flag == 1:
+        for nome, exp in funcs.items():
+            result += f'{nome}:\n   {exp}\n'
     return result
 
 def getoffSet (id):
@@ -32,7 +32,7 @@ def getoffSet (id):
         return vars[id]
     
 def get_label_cond(s):
-    global label
+    global label_cond
     if s == "IF":
         label_cond += 1
     return label_cond
