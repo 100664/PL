@@ -20,6 +20,9 @@ def define_funcao(nome, exp):
     for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal']:
         if op in exp:
             func_arg[nome] += 1
+    for op in ['pushi']:
+        if op in exp:
+            func_arg[nome] -= 1
 
 def print_funcoes():
     global func_flag
@@ -32,9 +35,12 @@ def print_funcoes():
                     result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
             result += f'   {exp}\n'  
             if (func_arg[nome] > 0): 
-                result += f'   storeg {i+2}\n'
+                result += f'   storeg {i+1}\n'
             result += f'   return\n'
     return result
+
+def pop(nome):
+    return func_arg[nome]+1
 
 def getoffSet (id):
     if (id in vars):

@@ -20,8 +20,8 @@ tokens = ('INT',
           'KEY',
           'DUP',
           '2DUP',
-          'PSTRING',
-          'DROP'
+          'DROP',
+          'EOF'
         )
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?', '@']
@@ -91,6 +91,18 @@ def t_DROP(t):
     r'DROP\b'
     return t
 
+def t_EOF(t):
+    r'\$'
+    if hasattr(t.lexer, 'eof_returned'):
+        res = None
+    else:
+        t.lexer.lineno += len(t.value)
+        t.value = '$'
+        t.type = 'EOF'  
+        t.lexer.eof_returned = True
+        res = t
+    return res
+
 def t_NOME(t):
     r'[A-Za-z0-9?]+\b'
     return t
@@ -100,24 +112,22 @@ def t_ID (t):
     return t
 
 def t_STRING(t):
-    r'\".*\"'
-    t.value = t.value[1:-1]
-    return t
-
-def t_PSTRING(t):
     r'\."\s*([^"]+)"'
     return t
 
 t_ignore = ' \t\n'
 
 def t_error(t):
-    print("Caracter inválido: ", t.value[0])
+    if t.value != '$':  # Evita processar o token de final de arquivo como caracter inválido
+        print("Caracter inválido: ", t.value[0])
     t.lexer.skip(1)
 
 
 lexer = lex()
 
-def lexer_debug (exemplo):
+def lexer_debug(exemplo):
     lexer.input(exemplo)
     while token := lexer.token():
+        if token.type == 'EOF':  # Verificando se é o token de final de arquivo
+            break
         print(token)
