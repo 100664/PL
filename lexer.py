@@ -21,7 +21,9 @@ tokens = ('INT',
           'DUP',
           '2DUP',
           'DROP',
-          'EOF'
+          'EOF',
+          'SWAP',
+          'I'
         )
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?', '@']
@@ -89,6 +91,14 @@ def t_DUP(t):
 
 def t_DROP(t):
     r'DROP\b'
+    return t
+
+def t_SWAP(t):
+    r'SWAP\b'
+    return t
+
+def t_I(t):
+    r'I\b'
     return t
 
 def t_EOF(t):

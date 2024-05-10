@@ -20,7 +20,7 @@ def define_funcao(nome, exp):
     for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal']:
         if op in exp:
             func_arg[nome] += 1
-    for op in ['pushi']:
+    for op in ['pushi', 'pushsp\nload 0', ]:
         if op in exp:
             func_arg[nome] -= 1
 
@@ -32,9 +32,10 @@ def print_funcoes():
             result += f'{nome}:\n'
             if (func_arg[nome] > 0):
                 for i in (range(func_arg[nome]+1)):
-                    result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
+                    if (func_arg[nome] - 1 > 0):
+                        result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
             result += f'   {exp}\n'  
-            if (func_arg[nome] > 0): 
+            if (func_arg[nome] -1 > 0): 
                 result += f'   storeg {i+1}\n'
             result += f'   return\n'
     return result
