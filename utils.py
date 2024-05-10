@@ -11,17 +11,29 @@ def p_error(t):
 def despejaVars (vars):
     return 'pushg 0\n' * (len (vars) - 1)
 
+
 def define_funcao(nome, exp):
+    func_arg[nome] = 0
     funcs[nome] = f'{exp}'
     global func_flag
     func_flag = 1
+    for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal']:
+        if op in exp:
+            func_arg[nome] += 1
 
 def print_funcoes():
     global func_flag
     result = ''
     if func_flag == 1:
         for nome, exp in funcs.items():
-            result += f'{nome}:\n   {exp}\n'
+            result += f'{nome}:\n'
+            if (func_arg[nome] > 0):
+                for i in (range(func_arg[nome]+1)):
+                    result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
+            result += f'   {exp}\n'  
+            if (func_arg[nome] > 0): 
+                result += f'   storeg {i+2}\n'
+            result += f'   return\n'
     return result
 
 def getoffSet (id):

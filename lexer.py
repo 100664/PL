@@ -16,9 +16,19 @@ tokens = ('INT',
           'VARIABLE', 
           'CR', 
           'SPACE', 
-          'SPACES')
+          'SPACES',
+          'KEY',
+          'DUP',
+          '2DUP',
+          'PSTRING',
+          'DROP'
+        )
 
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?', '@']
+
+def t_2DUP(t):
+    r'2DUP\b'
+    return t
 
 def t_INT(t):
     r'[+|-]?\d+'
@@ -69,17 +79,33 @@ def t_SPACES(t):
     r'SPACES\b'
     return t
 
+def t_KEY(t):
+    r'KEY\b'
+    return t
+
+def t_DUP(t):
+    r'DUP\b'
+    return t
+
+def t_DROP(t):
+    r'DROP\b'
+    return t
+
 def t_NOME(t):
-    r'[A-Z]+\b'
+    r'[A-Za-z0-9?]+\b'
     return t
 
 def t_ID (t):
     r'[A-Za-z]'
     return t
 
-def t_STRING (t):
-    r'\".*?\"'
+def t_STRING(t):
+    r'\".*\"'
     t.value = t.value[1:-1]
+    return t
+
+def t_PSTRING(t):
+    r'\."\s*([^"]+)"'
     return t
 
 t_ignore = ' \t\n'
