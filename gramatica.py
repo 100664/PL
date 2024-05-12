@@ -151,11 +151,11 @@ def p_Termoi7(t):
     
 def p_Termoi8(t):
     """Termoi : I """
-    t[0] = f'pushg 0'
+    t[0] = f'pushg 1'
     
 def p_Termoi9(t):
     """Termoi : I Lsinais"""
-    t[0] = f'pushg 0\n{t[2]}'  
+    t[0] = f'pushg 1\n{t[2]}'  
     
     
 
@@ -278,6 +278,10 @@ def p_Conteudo5(t):
 
 def p_Conteudo6(t):
     """Conteudo : Ciclo """
+    t[0] = f'{t[1]}'
+
+def p_Conteudo7(t):
+    """Conteudo : Variaveis """
     t[0] = f'{t[1]}'
 
 

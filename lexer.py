@@ -113,7 +113,7 @@ def t_EOF(t):
     return res
 
 def t_NOME(t):
-    r'[A-Za-z0-9?]+\b'
+    r'[A-Za-z0-9?!]+\b'
     return t
 
 def t_STRING(t):

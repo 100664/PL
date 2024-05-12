@@ -1,0 +1,11 @@
+: TEST   10 0 DO  CR ." Hello "  LOOP ;
+TEST 
+
+: DECADE  10 0 DO  I .  LOOP ;
+DECADE
+
+: SAMPLE  -243 -250 DO  I .  LOOP ;
+SAMPLE
+
+
+$

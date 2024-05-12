@@ -1,0 +1,4 @@
+CHAR W 
+DUP . EMIT CHAR A DUP .
+32 + EMIT
+$

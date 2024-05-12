@@ -17,7 +17,7 @@ def define_funcao(nome, exp):
     funcs[nome] = f'{exp}'
     global func_flag
     func_flag = 1
-    for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal']:
+    for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal', 'dup']:
         if op in exp:
             func_arg[nome] += 1
     for op in ['swap']:
@@ -36,7 +36,7 @@ def print_funcoes():
             if (func_arg[nome] > 0):
                 for i in (range(func_arg[nome]+1)):
                     if (func_arg[nome] > 0):
-                        result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
+                        result += f'   pushfp\n   load {i - (func_arg[nome]+1)}\n'
             result += f'   {exp}\n'  
             if (func_arg[nome] -1 > 0): 
                 result += f'   storeg {i+1}\n'
