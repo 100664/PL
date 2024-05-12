@@ -9,7 +9,7 @@ def p_error(t):
     print(f"Erro de sintaxe: {t.value}, {t}")
 
 def despejaVars (vars):
-    return 'pushg 0\n' * (len (vars) - 1)
+    return 'pushi 0\n' * (len (vars) - 1)
 
 
 def define_funcao(nome, exp):
@@ -20,7 +20,10 @@ def define_funcao(nome, exp):
     for op in ['add', 'sub', 'mul', 'div', 'mod', 'inf', 'sup', 'equal']:
         if op in exp:
             func_arg[nome] += 1
-    for op in ['pushi', 'pushsp\nload 0', ]:
+    for op in ['swap']:
+        if op in exp:
+            func_arg[nome] += 2
+    for op in ['pushi', 'pushsp', 'pushg']:
         if op in exp:
             func_arg[nome] -= 1
 
@@ -32,7 +35,7 @@ def print_funcoes():
             result += f'{nome}:\n'
             if (func_arg[nome] > 0):
                 for i in (range(func_arg[nome]+1)):
-                    if (func_arg[nome] - 1 > 0):
+                    if (func_arg[nome] > 0):
                         result += f'   pushfp\n   load {i - (func_arg[nome]+ 1)}\n'
             result += f'   {exp}\n'  
             if (func_arg[nome] -1 > 0): 

@@ -1,6 +1,6 @@
 """
 
-z -> prog '$'
+z -> prog EOF
 
 prog -> prog Instrucao
       | Instrucao
@@ -10,10 +10,11 @@ Instrucao -> Print
            | Exp
            | Funcoes
            | Variaveis
+           | Ciclo
 
 Print -> '.'
-       | CHAR ID
-       | KEY Exp
+       | CHAR NOME
+       | KEY
        | SPACE
        | INT SPACES
        | STRING
@@ -21,20 +22,33 @@ Print -> '.'
        | CR
 
 Exp -> '(' Exp ')'
-      | Expi
-      | Exp '='
+     | Expi
 
 Expi -> Lints
+      | Lints Lcomps
 
-Lints -> Termoi
-       | Lints Termoi
-       | '-' Termoi
+Lcomps -> Comp
+        | Lcomps Comp
+
+Comp -> '='
+      | '<'
+      | '<' '='
+      | '>'
+      | '>' '='
+      | '<' '>'
+
+Lints -> Lints Termoi
+       | Termoi
 
 Termoi -> INT
         | INT Lsinais
         | DUP
         | DUP Lsinais
         | 2DUP
+        | DROP
+        | SWAP
+        | I
+        | I Lsinais
 
 Lsinais -> Sinal
          | Lsinais Sinal
@@ -44,14 +58,6 @@ Sinal -> '+'
        | '*'
        | '/'
        | '%'
-       | '<'
-       | '<' '='
-       | '>'
-       | '>' '='
-       | '<' '>'
-
-Cond -> Exp IF prog ELSE prog THEN
-      | Exp IF prog THEN
 
 Funcoes -> ':' NOME Definicao ';'
          | NOME
@@ -65,15 +71,17 @@ Conteudo -> Lsinais
           | Print
           | Cond
           | NOME
+          | Ciclo
 
-Ciclo -> Lints DO '{' prog '}' LOOP
-       | Lints DO Instrucao LOOP
+Cond -> Exp IF prog ELSE prog THEN
+      | Exp IF prog THEN
+
+Ciclo -> DO prog LOOP
 
 Variaveis -> VARIABLE NOME
            | Exp NOME '!'
            | NOME '?'
            | NOME '@'
-
 
 
 """

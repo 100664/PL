@@ -48,17 +48,6 @@ def p_Instrucao6(t):
     """Instrucao : Ciclo"""
     t[0] = f'{t[1]}'
 
-def p_Instrucao7(t):
-    """Instrucao : SWAP """
-    t[0] = f'swap'
-
-def p_Instrucao8(t):
-    """Instrucao : I """
-    t[0] = f'pushsp\nload 0'
-    
-def p_Instrucao9(t):
-    """Instrucao : I Lsinais"""
-    t[0] = f'pushsp\nload 0\n{t[2]}'
     
     
     
@@ -68,12 +57,12 @@ def p_Print1(t):
     t[0] = f'writei'
 
 def p_Print2(t):
-    """Print : CHAR ID """
+    """Print : CHAR NOME"""
     t[0] = f'pushs "{t[2]}"\nchrcode'
 
 def p_Print3(t):
-    """Print : KEY Exp """
-    t[0] = f'read'
+    """Print : KEY"""
+    t[0] = f'read\natoi'
 
 def p_Print4(t):
     """Print : SPACE """
@@ -146,7 +135,7 @@ def p_Termoi3(t):
 
 def p_Termoi4(t):
     """Termoi : DUP Lsinais """
-    t[0] = f'dup 1\n{t[3]}'
+    t[0] = f'dup 1\n{t[1]}'
 
 def p_Termoi5(t):
     """Termoi : 2DUP """
@@ -155,7 +144,18 @@ def p_Termoi5(t):
 def p_Termoi6(t):
     """Termoi : DROP """
     t[0] = f'pop 1'
+ 
+def p_Termoi7(t):
+    """Termoi : SWAP """
+    t[0] = f'swap' 
     
+def p_Termoi8(t):
+    """Termoi : I """
+    t[0] = f'pushg 0'
+    
+def p_Termoi9(t):
+    """Termoi : I Lsinais"""
+    t[0] = f'pushg 0\n{t[2]}'  
     
     
 
