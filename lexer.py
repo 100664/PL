@@ -28,76 +28,76 @@ tokens = ('INT',
 literals = ['+', '-', '*', '/', '(', ')', '^', '=', ';', '.', '%', ':', '"', '<', '>', '!', '?', '@']
 
 def t_2DUP(t):
-    r'[2|2][D|d][U|u][P|p]'
+    r'2[Dd][Uu][Pp]'
     return t
 
 def t_INT(t):
-    r'[+|-]?\d+'
+    r'[+-]?\d+'
     t.value = int(t.value)
     return t
 
 def t_IF (t):
-    r'[I|i][F|f]'
+    r'[Ii][Ff]'
     return t
 
 def t_THEN (t):
-    r'[T|t][H|h][E|e][N|n]'
+    r'[Tt][Hh][Ee][Nn]'
     return t
 
 def t_ELSE(t):
-    r'[E|e][L|l][S|s][E|e]'
+    r'[Ee][Ll][Ss][Ee]'
     return t
 
 def t_CHAR (t):
-    r'[C|c][H|h][A|a][R|r]'
+    r'[Cc][Hh][Aa][Rr]'
     return t
 
 def t_EMIT(t):
-    r'[E|e][M|m][I|i][T|t]'
+    r'[Ee][Mm][Ii][Tt]'
     return t
 
 def t_DO(t):
-    r'[D|d][O|o]'
+    r'[Dd][Oo]'
     return t
 
 def t_LOOP(t):
-    r'[L|l][O|o][O|o][P|p]'
+    r'[Ll][Oo][Oo][Pp]'
     return t
 
 def t_VARIABLE(t):
-    r'[V|v][A|a][R|r][I|i][A|a][B|b][L|l][E|e]'
+    r'[Vv][Aa][Rr][Ii][Aa][Bb][Ll][Ee]'
     return t
 
 def t_CR(t):
-    r'[C|c][R|r]'
+    r'[Cc][Rr]'
     return t
 
 def t_SPACE(t):
-    r'[S|s][P|p][A|a][C|c][E|e]'
+    r'[Ss][Pp][Aa][Cc][Ee]'
     return t
 
 def t_SPACES(t):
-    r'[S|s][P|p][A|a][C|c][E|e][S|s]'
+    r'[Ss][Pp][Aa][Cc][Ee][Ss]'
     return t
 
 def t_KEY(t):
-    r'[K|k][E|e][Y|y]'
+    r'[Kk][Ee][Yy]'
     return t
 
 def t_DUP(t):
-    r'[D|d][U|u][P|p]'
+    r'[Dd][Uu][Pp]'
     return t
 
 def t_DROP(t):
-    r'[D|d][R|r][O|o][P|p]'
+    r'[Dd][Rr][Oo][Pp]'
     return t
 
 def t_SWAP(t):
-    r'[S|s][W|w][A|a][P|p]'
+    r'[Ss][Ww][Aa][Pp]'
     return t
 
 def t_I(t):
-    r'[I|i]'
+    r'[Ii]'
     return t
 
 def t_EOF(t):

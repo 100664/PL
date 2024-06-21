@@ -72,6 +72,7 @@ Conteudo -> Lsinais
           | Cond
           | NOME
           | Ciclo
+          | Variaveis
 
 Cond -> Exp IF prog ELSE prog THEN
       | Exp IF prog THEN
